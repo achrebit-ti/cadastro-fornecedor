@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Achrebit - Cadastro de fornecedor</title>
+<style>
+:root{--navy:#1f3a5f;--band:#e8eef7;--line:#d9dee6;--gray:#555;--err:#b3261e;--ok:#1b6e3c}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1c2430;background:#f5f7fa;line-height:1.45}
+header{background:var(--navy);color:#fff;padding:22px 16px}
+header div,main{max-width:900px;margin:0 auto}
+header div{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{background:#fff;border-radius:8px;padding:6px 10px;height:70px;flex:none}
+.logo img{height:58px;display:block}
+header h1{margin:0 0 4px;font-size:22px}
+header p{margin:0;font-size:14px;opacity:.9}
+main{padding:16px}
+.intro{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-size:14px;color:var(--gray)}
+.intro ol{margin:6px 0 0;padding-left:20px}
+fieldset{background:#fff;border:1px solid var(--line);border-radius:8px;margin:16px 0;padding:0 16px 14px}
+legend{background:var(--band);color:var(--navy);font-weight:700;font-size:15px;padding:6px 12px;border-radius:6px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-top:12px}
+.c2{grid-column:span 2}.c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}.c6{grid-column:span 6}.c8{grid-column:span 8}.c12{grid-column:span 12}
+@media(max-width:680px){.c2,.c3,.c4,.c5,.c6,.c8{grid-column:span 12}}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:3px}
+.req{color:var(--err)}
+.hint{font-size:12px;color:var(--gray);font-weight:400}
+input,select,textarea{width:100%;padding:8px 9px;font:inherit;border:1px solid #b9c2cf;border-radius:6px;background:#fff}
+input:focus,select:focus,textarea:focus{outline:2px solid #6c8cc0;border-color:#6c8cc0}
+.bad{border-color:var(--err)!important;background:#fff6f5}
+.msg{color:var(--err);font-size:12px;margin-top:2px}
+.sub{grid-column:span 12;font-weight:700;color:var(--navy);font-size:13px;margin-top:6px;border-bottom:1px solid var(--line);padding-bottom:2px}
+.note{grid-column:span 12;font-size:12.5px;color:var(--gray);background:#fff8e6;border:1px solid #f0dca0;border-radius:6px;padding:8px 10px}
+.auto{font-size:12px;color:var(--ok);margin-top:2px}
+.radios,.checks{display:flex;gap:6px 16px;flex-wrap:wrap}
+.radios label,.checks label{font-weight:400;display:flex;gap:6px;align-items:center;margin:0}
+.radios input,.checks input{width:auto}
+.hidden{display:none}
+button{font:inherit;cursor:pointer;border-radius:6px;padding:10px 18px;border:1px solid var(--navy)}
+.primary{background:var(--navy);color:#fff}
+.secondary{background:#fff;color:var(--navy)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 24px;align-items:center}
+#resultado{background:#fff;border:2px solid var(--ok);border-radius:8px;padding:16px;margin:16px 0}
+#resultado h2{margin:0 0 6px;color:var(--ok);font-size:18px}
+#resultado textarea{height:260px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+#resultado ol{margin:6px 0 10px;padding-left:20px;font-size:14px}
+footer{text-align:center;font-size:12px;color:var(--gray);padding:0 16px 28px}
+</style>
+</head>
+<body>
+<header><div>
+<span><h1>Cadastro de fornecedor</h1>
+<p>Achrebit Indústria e Comércio Ltda.</p></span>
+<span class="logo"><img alt="Achrebit" src="data:image/png;base64,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"></span>
+</div></header>
+<main>
+<div class="intro">
+Precisamos completar o seu cadastro. Como funciona:
+<ol>
+<li>Digite o CNPJ: se houver internet, o formulário busca na Receita Federal os dados da empresa. Confira e complete o restante (cerca de 5 minutos).</li>
+<li>Clique em <b>Gerar e-mail de cadastro</b>. Será criado um e-mail para o Setor de Compras da Achrebit, já preenchido e com o arquivo de cadastro anexado.</li>
+<li>Abra o e-mail, confira e clique em <b>Enviar</b>.</li>
+</ol>
+Campos com <span class="req">*</span> são obrigatórios. Seus dados ficam apenas no seu computador até você enviar o arquivo.
+</div>
+
+<form id="f" novalidate>
+
+<fieldset>
+<legend>1. Identificação e dados fiscais</legend>
+<div class="grid">
+ <div class="c4"><label for="cnpj">CNPJ <span class="req">*</span></label><input id="cnpj" data-k="cnpj" required inputmode="numeric" placeholder="00.000.000/0000-00"><div class="msg" id="cnpj-m"></div><div class="auto" id="cnpj-a"></div></div>
+ <div class="c8"><label for="razao">Razão social <span class="req">*</span></label><input id="razao" data-k="nomeRazaoSocial" required></div>
+ <div class="c6"><label for="fantasia">Nome fantasia</label><input id="fantasia" data-k="nome"></div>
+ <div class="c6"><label for="site">Site</label><input id="site" data-k="site" placeholder="www.exemplo.com.br"></div>
+ <div class="c4"><label for="ie">Inscrição estadual <span class="req">*</span><br><span class="hint">Escreva ISENTO se não possuir</span></label><input id="ie" data-k="inscricaoEstadual" required></div>
+ <div class="c4"><label for="im">Inscrição municipal<br><span class="hint">Se prestar serviços</span></label><input id="im" data-k="inscricaoMunicipal"></div>
+ <div class="c4"><label>Inscrição Suframa<br><span class="hint">Se possuir</span></label><input data-k="inscricaoSuframa"></div>
+ <div class="c4"><label for="icms">Contribuinte de ICMS <span class="req">*</span></label>
+  <select id="icms" data-k="tipoContribuinteICMS" required><option value="">Selecione</option><option value="1">Contribuinte</option><option value="2">Isento</option><option value="3">Não contribuinte</option></select></div>
+ <div class="c6"><label for="crt">Regime tributário <span class="req">*</span></label>
+  <select id="crt" data-k="crt" required><option value="">Selecione</option><option value="1">Simples Nacional</option><option value="2">Simples Nacional - excesso de sublimite</option><option value="3">Regime normal (Lucro Presumido ou Real)</option><option value="4">MEI</option></select></div>
+ <div class="c3"><label for="cnaec">CNAE principal (código)</label><input id="cnaec" data-k="cnaePrincipalCodigo" placeholder="0000-0/00"></div>
+ <div class="c3"><label for="cnaed">CNAE (descrição)</label><input id="cnaed" data-k="cnaePrincipal"></div>
+ <div class="c12"><label>O que a empresa fornece à Achrebit <span class="req">*</span></label>
+  <div class="checks" id="tipoForn">
+   <label><input type="checkbox" value="Matéria-prima"> Matéria-prima</label>
+   <label><input type="checkbox" value="Materiais para revenda"> Materiais para revenda</label>
+   <label><input type="checkbox" value="Materiais de uso e consumo"> Uso e consumo</label>
+   <label><input type="checkbox" value="Serviço / industrialização"> Serviços / industrialização</label>
+   <label><input type="checkbox" value="Embalagens"> Embalagens</label>
+   <label><input type="checkbox" value="Outros"> Outros</label>
+  </div></div>
+ <div class="c12"><label for="forn">Principais produtos/serviços</label><input id="forn" data-k="comercial.principaisFornecimentos" placeholder="Ex.: aço, embalagens, usinagem"></div>
+</div>
+</fieldset>
+
+<fieldset>
+<legend>2. Endereço principal (sede / faturamento)</legend>
+<div class="grid">
+ <div class="c3"><label for="cep">CEP <span class="req">*</span></label><input id="cep" data-k="cep" required inputmode="numeric" placeholder="00000-000"></div>
+ <div class="c3"><label for="tlog">Tipo <span class="req">*</span></label>
+  <select id="tlog" data-k="tipoLogradouro" required><option value="">Selecione</option><option>RUA</option><option>AVENIDA</option><option>ESTRADA</option><option>RODOVIA</option><option>ALAMEDA</option><option>TRAVESSA</option><option>PRAÇA</option><option>VIA</option><option>FAZENDA</option><option>VIELA</option><option>LARGO</option><option>OUTRO</option></select></div>
+ <div class="c6"><label for="logr">Logradouro (sem o tipo) <span class="req">*</span></label><input id="logr" data-k="endereco" required></div>
+ <div class="c3"><label for="num">Número <span class="req">*</span><br><span class="hint">Ou S/N</span></label><input id="num" data-k="numero" required></div>
+ <div class="c3"><label for="comp">Complemento</label><input id="comp" data-k="complemento"></div>
+ <div class="c3"><label for="tbai">Tipo de bairro</label>
+  <select id="tbai" data-k="tipoBairro"><option value="">-</option><option>BAIRRO</option><option>BOSQUE</option><option>CHÁCARA</option><option>CONJUNTO</option><option>CENTRO</option><option>DESMEMBRAMENTO</option><option>DISTRITO</option><option>FAVELA</option><option>FAZENDA</option><option>GLEBA</option><option>HORTO</option><option>JARDIM</option><option>LOTEAMENTO</option><option>NÚCLEO</option><option>PARQUE</option><option>RESIDENCIAL</option><option>SETOR</option><option>SÍTIO</option><option>TROPICAL</option><option>VILA</option><option>ZONA</option></select></div>
+ <div class="c3"><label for="bairro">Bairro <span class="req">*</span></label><input id="bairro" data-k="bairroDistrito" required></div>
+ <div class="c8"><label for="mun">Município <span class="req">*</span></label><input id="mun" data-k="municipio" required></div>
+ <div class="c2"><label for="uf">UF <span class="req">*</span></label><input id="uf" data-k="uf" required maxlength="2" style="text-transform:uppercase"></div>
+ <div class="c2"><label for="ibge">Cód. IBGE<br><span class="hint">Se souber</span></label><input id="ibge" data-k="codigoIBGEMunicipio" inputmode="numeric" maxlength="7"></div>
+ <div class="c6"><label for="tel">Telefone geral <span class="req">*</span><br><span class="hint">Com DDD</span></label><input id="tel" data-k="telefone" type="tel" required></div>
+ <div class="c6"><label>Telefone secundário<br><span class="hint">Com DDD</span></label><input data-k="telefoneSecundario" type="tel"></div>
+ <div class="c6"><label for="email">E-mail geral <span class="req">*</span></label><input id="email" data-k="email" type="email" required></div>
+</div>
+</fieldset>
+
+<fieldset>
+<legend>3. Endereços de entrega/retirada e de cobrança</legend>
+<div class="grid">
+ <div class="c12"><label>O local de expedição / retirada de mercadorias é diferente do principal?</label>
+  <div class="radios"><label><input type="radio" name="exp_dif" value="Não" checked> Não</label><label><input type="radio" name="exp_dif" value="Sim"> Sim</label></div></div>
+ <div class="c12 hidden" id="exp-box"><div class="grid" style="margin-top:0">
+  <div class="c3"><label>CEP</label><input data-k="enderecoEntrega.cep"></div>
+  <div class="c6"><label>Logradouro</label><input data-k="enderecoEntrega.endereco"></div>
+  <div class="c3"><label>Número</label><input data-k="enderecoEntrega.numero"></div>
+  <div class="c4"><label>Complemento</label><input data-k="enderecoEntrega.complemento"></div>
+  <div class="c4"><label>Bairro</label><input data-k="enderecoEntrega.bairro"></div>
+  <div class="c3"><label>Município</label><input data-k="enderecoEntrega.municipio"></div>
+  <div class="c1" style="grid-column:span 1"><label>UF</label><input data-k="enderecoEntrega.uf" maxlength="2"></div>
+ </div></div>
+ <div class="c12"><label>O endereço de cobrança é diferente do principal?</label>
+  <div class="radios"><label><input type="radio" name="cobr_dif" value="Não" checked> Não</label><label><input type="radio" name="cobr_dif" value="Sim"> Sim</label></div></div>
+ <div class="c12 hidden" id="cobr-box"><div class="grid" style="margin-top:0">
+  <div class="c3"><label>CEP</label><input data-k="enderecoCobranca.cep"></div>
+  <div class="c6"><label>Logradouro</label><input data-k="enderecoCobranca.endereco"></div>
+  <div class="c3"><label>Número</label><input data-k="enderecoCobranca.numero"></div>
+  <div class="c4"><label>Complemento</label><input data-k="enderecoCobranca.complemento"></div>
+  <div class="c4"><label>Bairro</label><input data-k="enderecoCobranca.bairro"></div>
+  <div class="c3"><label>Município</label><input data-k="enderecoCobranca.municipio"></div>
+  <div class="c1" style="grid-column:span 1"><label>UF</label><input data-k="enderecoCobranca.uf" maxlength="2"></div>
+ </div></div>
+</div>
+</fieldset>
+
+<fieldset>
+<legend>4. Contatos e e-mails de documentos</legend>
+<div class="grid">
+ <div class="note">Informe pelo menos o contato comercial. Prefira e-mails de função (vendas@, financeiro@) a e-mails pessoais.</div>
+ <div class="c12"><div class="sub" style="margin:0">Comercial / vendas</div></div>
+ <div class="c4"><label for="com_n">Nome <span class="req">*</span></label><input id="com_n" data-k="contato.comercial.nome" required></div>
+ <div class="c4"><label for="com_e">E-mail <span class="req">*</span></label><input id="com_e" data-k="contato.comercial.email" type="email" required></div>
+ <div class="c4"><label for="com_t">Telefone / WhatsApp <span class="req">*</span></label><input id="com_t" data-k="contato.comercial.telefone" type="tel" required></div>
+ <div class="c12"><div class="sub" style="margin:0">Financeiro / cobrança</div></div>
+ <div class="c4"><label>Nome</label><input data-k="contato.financeiro.nome"></div>
+ <div class="c4"><label>E-mail</label><input data-k="contato.financeiro.email" type="email"></div>
+ <div class="c4"><label>Telefone / WhatsApp</label><input data-k="contato.financeiro.telefone" type="tel"></div>
+ <div class="c12"><div class="sub" style="margin:0">Expedição / logística</div></div>
+ <div class="c4"><label>Nome</label><input data-k="contato.expedicao.nome"></div>
+ <div class="c4"><label>E-mail</label><input data-k="contato.expedicao.email" type="email"></div>
+ <div class="c4"><label>Telefone / WhatsApp</label><input data-k="contato.expedicao.telefone" type="tel"></div>
+ <div class="c12"><div class="sub" style="margin:0">Qualidade / certificados</div></div>
+ <div class="c4"><label>Nome</label><input data-k="contato.qualidade.nome"></div>
+ <div class="c4"><label>E-mail</label><input data-k="contato.qualidade.email" type="email"></div>
+ <div class="c4"><label>Telefone / WhatsApp</label><input data-k="contato.qualidade.telefone" type="tel"></div>
+ <div class="c12"><div class="sub" style="margin:0">E-mails para documentos</div></div>
+ <div class="c6"><label for="em_ped">Receber cotações e pedidos de compra <span class="req">*</span><br><span class="hint">Vários? Separe por ponto e vírgula</span></label><input id="em_ped" data-k="compras.emailsEnvioCotacoesEPedidosCompra" required></div>
+ <div class="c6"><label for="em_nfe">Enviar XML/DANFE das notas fiscais (NF-e) <span class="req">*</span><br><span class="hint">Vários? Separe por ponto e vírgula</span></label><input id="em_nfe" data-k="faturamento.emailsNfe" required></div>
+</div>
+</fieldset>
+
+<fieldset>
+<legend>5. Dados bancários para pagamento</legend>
+<div class="grid">
+ <div class="note">A conta deve estar no nome (CNPJ) da empresa cadastrada. Por segurança, a Achrebit confirmará estes dados por telefone, com um número que já consta em seus registros, antes de usá-los. Nunca informe senhas.</div>
+ <div class="c4"><label for="banco">Banco (código e nome)</label><input id="banco" data-k="bancoPessoa" placeholder="Ex.: 341 - Itaú"></div>
+ <div class="c3"><label>Agência</label><input data-k="agenciaPessoa"></div>
+ <div class="c3"><label>Conta (com dígito)</label><input data-k="contaPessoa"></div>
+ <div class="c2"><label>Tipo</label><select data-k="tipoContaPessoa"><option value="">-</option><option value="1">Conta corrente</option><option value="2">Conta poupança</option></select></div>
+ <div class="c6"><label>Titular da conta</label><input data-k="banco.titular"></div>
+ <div class="c6"><label>CNPJ/CPF do titular</label><input data-k="banco.documentoTitular"></div>
+ <div class="c4"><label>Tipo da chave PIX</label><select data-k="banco.pixTipo"><option value="">-</option><option>CNPJ</option><option>E-mail</option><option>Telefone</option><option>Chave aleatória</option></select></div>
+ <div class="c8"><label>Chave PIX</label><input data-k="banco.pixChave"></div>
+</div>
+</fieldset>
+
+<fieldset>
+<legend>6. Condições comerciais usuais</legend>
+<div class="grid">
+ <div class="c6"><label>Condição de pagamento habitual</label><input data-k="comercial.condicaoPagamento" placeholder="Ex.: 28 dias, 30/60 dias, à vista"></div>
+ <div class="c6"><label>Prazo médio de entrega</label><input data-k="comercial.prazoEntrega" placeholder="Ex.: 5 dias úteis"></div>
+ <div class="c4"><label>Frete</label><select data-k="modalidadeTransporteFornecedor"><option value="">-</option><option value="0">Frete por conta do fornecedor (CIF)</option><option value="1">Frete por conta da Achrebit (FOB)</option><option value="2">Frete por conta de terceiros</option><option value="3">Transporte próprio do fornecedor</option><option value="4">Transporte próprio da Achrebit (retirada)</option><option value="9">Sem transporte (serviço)</option></select></div>
+ <div class="c4"><label>Pedido mínimo</label><input data-k="comercial.pedidoMinimo" placeholder="Valor ou quantidade"></div>
+ <div class="c4"><label>Possui certificações (ISO etc.)?</label><input data-k="comercial.certificacoes" placeholder="Ex.: ISO 9001"></div>
+ <div class="c12"><label>Observações</label><textarea data-k="observacoes" rows="3"></textarea></div>
+</div>
+</fieldset>
+
+<fieldset>
+<legend>7. Responsável pelo preenchimento</legend>
+<div class="grid">
+ <div class="c4"><label for="resp">Nome <span class="req">*</span></label><input id="resp" data-k="responsavel.nome" required></div>
+ <div class="c4"><label>Cargo</label><input data-k="responsavel.cargo"></div>
+ <div class="c4"><label>Data</label><input id="data" data-k="responsavel.data" type="date"></div>
+ <div class="c12"><label style="font-weight:400"><input type="checkbox" id="ok" style="width:auto"> Declaro que as informações acima são verdadeiras e autorizo a Achrebit a usá-las para cadastro e relacionamento comercial (LGPD). <span class="req">*</span></label><div class="msg" id="ok-m"></div></div>
+</div>
+</fieldset>
+
+<div class="actions">
+ <button type="submit" class="primary">Gerar e-mail de cadastro</button>
+ <button type="reset" class="secondary" id="reset">Limpar</button>
+</div>
+</form>
+
+<section id="resultado" class="hidden" aria-live="polite">
+ <h2>Tudo pronto para enviar</h2>
+ <ol>
+  <li>Clique em <b>Abrir e-mail pronto</b>. Será baixado um arquivo <b>.eml</b>; abra-o (duplo clique) e o seu programa de e-mail mostrará a mensagem já endereçada a <b>compras@achrebit.com.br</b>, com o relatório no corpo e o arquivo de cadastro anexado.</li>
+  <li>Confira e clique em <b>Enviar</b>.</li>
+  <li>Se o e-mail não abrir (alguns programas, como o Gmail pelo navegador, não abrem .eml): use <b>Baixar arquivo .txt</b> e envie esse arquivo como anexo para <b>compras@achrebit.com.br</b>, com o assunto <b id="assuntoTxt"></b>.</li>
+ </ol>
+ <div class="actions" style="margin-bottom:6px">
+  <button class="primary" id="emlBtn" type="button">Abrir e-mail pronto (.eml)</button>
+  <button class="secondary" id="baixar" type="button">Baixar arquivo .txt</button>
+  <button class="secondary" id="mailtoBtn" type="button">Abrir pelo programa de e-mail (sem anexo)</button>
+  <button class="secondary" id="copiar" type="button">Copiar texto</button>
+  <span id="status" style="font-size:13px;color:var(--ok)"></span>
+ </div>
+ <p class="hint" style="margin:0 0 8px">A opção "sem anexo" coloca o texto de cadastro no corpo do e-mail; em alguns programas ele pode ser cortado se for muito longo.</p>
+ <textarea id="saida" readonly></textarea>
+</section>
+</main>
+<footer>Achrebit Indústria e Comércio Ltda. · Diadema/SP · Os dados informados são usados somente para o cadastro de fornecedores.</footer>
+
+<script>
+(function(){
+var f=document.getElementById('f');
+function $(id){return document.getElementById(id)}
+function digits(s){return (s||'').replace(/\D/g,'')}
+function hoje(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+$('data').value=hoje();
+function byKey(k){return f.querySelector('[data-k="'+k+'"]')}
+
+function toggle(name,box){[].forEach.call(f.querySelectorAll('input[name="'+name+'"]'),function(r){r.addEventListener('change',function(){$(box).classList.toggle('hidden',f.querySelector('input[name="'+name+'"]:checked').value!=='Sim')})})}
+toggle('cobr_dif','cobr-box');toggle('exp_dif','exp-box');
+
+function maskCnpj(v){var d=digits(v).slice(0,14),o=d;
+ if(d.length>12)o=d.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})/,'$1.$2.$3/$4-$5');
+ else if(d.length>8)o=d.replace(/(\d{2})(\d{3})(\d{3})(\d{0,4})/,'$1.$2.$3/$4');
+ else if(d.length>5)o=d.replace(/(\d{2})(\d{3})(\d{0,3})/,'$1.$2.$3');
+ else if(d.length>2)o=d.replace(/(\d{2})(\d{0,3})/,'$1.$2');
+ return o}
+function maskCep(v){var d=digits(v).slice(0,8);return d.length>5?d.slice(0,5)+'-'+d.slice(5):d}
+$('cnpj').addEventListener('input',function(){this.value=maskCnpj(this.value)});
+$('cep').addEventListener('input',function(){this.value=maskCep(this.value)});
+
+function cnpjOk(s){var d=digits(s);if(d.length!==14||/^(\d)\1+$/.test(d))return false;
+ function dv(n){var p=n-7,sum=0;for(var i=0;i<n;i++){sum+=+d[i]*p--;if(p<2)p=9}var r=sum%11;return r<2?0:11-r}
+ return dv(12)==+d[12]&&dv(13)==+d[13]}
+
+function setIfEmpty(k,v,sel){var el=byKey(k);if(!el||v==null||v==='')return;
+ if(el.value.trim())return;
+ if(el.tagName==='SELECT'){var o=[].filter.call(el.options,function(o){return o.text.toUpperCase()===String(v).toUpperCase()||o.value===String(v)})[0];if(o)el.value=o.value}
+ else el.value=v}
+
+// preenchimento automático pela Receita (se houver internet)
+$('cnpj').addEventListener('blur',function(){
+ var d=digits(this.value);if(!cnpjOk(this.value))return;
+ $('cnpj-a').textContent='Buscando dados na Receita Federal...';
+ var ctl=new AbortController(),t=setTimeout(function(){ctl.abort()},8000);
+ fetch('https://brasilapi.com.br/api/cnpj/v1/'+d,{signal:ctl.signal}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
+  clearTimeout(t);
+  setIfEmpty('nomeRazaoSocial',j.razao_social);setIfEmpty('nome',j.nome_fantasia);
+  setIfEmpty('cep',maskCep(String(j.cep||'')));
+  setIfEmpty('tipoLogradouro',j.descricao_tipo_de_logradouro);
+  var lg=(j.logradouro||'');if(j.descricao_tipo_de_logradouro&&lg.toUpperCase().indexOf(j.descricao_tipo_de_logradouro.toUpperCase()+' ')===0)lg=lg.slice(j.descricao_tipo_de_logradouro.length+1);
+  setIfEmpty('endereco',lg);setIfEmpty('numero',j.numero);setIfEmpty('complemento',j.complemento);
+  setIfEmpty('bairroDistrito',j.bairro);setIfEmpty('municipio',j.municipio);setIfEmpty('uf',j.uf);
+  setIfEmpty('codigoIBGEMunicipio',j.codigo_municipio_ibge?String(j.codigo_municipio_ibge):'');
+  setIfEmpty('cnaePrincipalCodigo',j.cnae_fiscal?String(j.cnae_fiscal).replace(/(\d{4})(\d)(\d{2})/,'$1-$2/$3'):'');
+  setIfEmpty('cnaePrincipal',j.cnae_fiscal_descricao);
+  var tel=j.ddd_telefone_1||'';if(tel)setIfEmpty('telefone',tel);
+  if(j.email)setIfEmpty('email',String(j.email).toLowerCase());
+  if(!byKey('crt').value){byKey('crt').value=j.opcao_pelo_mei?'4':(j.opcao_pelo_simples?'1':'3')}
+  $('cnpj-a').textContent='Dados preenchidos pela Receita Federal. Confira e corrija se necessário.'
+ }).catch(function(){clearTimeout(t);$('cnpj-a').textContent='Não foi possível consultar a Receita agora. Preencha manualmente.'})});
+
+// CEP -> endereço (se houver internet)
+$('cep').addEventListener('blur',function(){var d=digits(this.value);if(d.length!==8)return;
+ var ctl=new AbortController(),t=setTimeout(function(){ctl.abort()},6000);
+ fetch('https://viacep.com.br/ws/'+d+'/json/',{signal:ctl.signal}).then(function(r){return r.json()}).then(function(j){clearTimeout(t);if(j.erro)return;
+  setIfEmpty('bairroDistrito',j.bairro);setIfEmpty('municipio',j.localidade);setIfEmpty('uf',j.uf);setIfEmpty('codigoIBGEMunicipio',j.ibge);
+  if(j.logradouro){var m=j.logradouro.match(/^(\S+)\s+(.*)$/);if(m&&byKey('tipoLogradouro')){setIfEmpty('tipoLogradouro',m[1]);setIfEmpty('endereco',m[2])}}
+ }).catch(function(){clearTimeout(t)})});
+
+var emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function validar(){
+ var primeiro=null,erros=0;
+ function falha(el){erros++;el.classList.add('bad');primeiro=primeiro||el}
+ [].forEach.call(f.querySelectorAll('[required]'),function(el){el.classList.remove('bad');if(!el.value.trim())falha(el)});
+ var c=$('cnpj');
+ if(c.value.trim()&&!cnpjOk(c.value)){falha(c);$('cnpj-m').textContent='CNPJ inválido. Confira os dígitos.'}else $('cnpj-m').textContent='';
+ [].forEach.call(f.querySelectorAll('input[type=email]'),function(el){if(el.value.trim()&&!emailRe.test(el.value.trim()))falha(el)});
+ ['em_ped','em_nfe'].forEach(function(id){var el=$(id),v=el.value.trim();
+  if(v&&v.split(/\s*[;,]\s*/).some(function(x){return x&&!emailRe.test(x)}))falha(el)});
+ var uf=$('uf');if(uf.value.trim()&&!/^[A-Za-z]{2}$/.test(uf.value.trim()))falha(uf);
+ var cep=$('cep');if(cep.value.trim()&&digits(cep.value).length!==8)falha(cep);
+ if(![].some.call($('tipoForn').querySelectorAll('input'),function(i){return i.checked})){erros++;primeiro=primeiro||$('tipoForn').querySelector('input')}
+ if(!$('ok').checked){$('ok-m').textContent='Marque a declaração para continuar.';erros++;primeiro=primeiro||$('ok')}else $('ok-m').textContent='';
+ return {erros:erros,primeiro:primeiro}}
+
+function limpa(v){return String(v).replace(/[\r\n\t]+/g,' ').replace(/\s{2,}/g,' ').trim()}
+
+function montar(){
+ var L=['#ACHREBIT-CADASTRO-FORNECEDOR v1','#Gerado em '+new Date().toLocaleString('pt-BR'),'#Formato chave=valor, um por linha, texto UTF-8. Nao editar manualmente.',''];
+ var v={};
+ [].forEach.call(f.querySelectorAll('[data-k]'),function(el){
+  var k=el.getAttribute('data-k'),val=limpa(el.value);
+  if(!val)return;
+  if(el.closest('.hidden'))return;
+  if(k==='cnpj')val=maskCnpj(val);
+  if(k==='uf')val=val.toUpperCase();
+  if(k==='faturamento.emailsNfe')k='faturamento.emailsCampoParaAutorizacaoNfe';
+  if(/^(email|compras\.|faturamento\.|contato\..*\.email)/.test(k))val=val.toLowerCase();
+  v[k]=val});
+ v['tipoPessoa']='1';
+ v['categorias.fornecedor']='true';
+ v['codigoPais']='1058';
+ v['fornecimento.tipos']=[].filter.call($('tipoForn').querySelectorAll('input'),function(i){return i.checked}).map(function(i){return i.value}).join(' | ');
+ v['endereco.entregaDiferente']=f.querySelector('input[name=exp_dif]:checked').value;
+ v['endereco.cobrancaDiferente']=f.querySelector('input[name=cobr_dif]:checked').value;
+ v['declaracao.veracidadeLgpd']='aceita';
+ Object.keys(v).forEach(function(k){L.push(k+'='+v[k])});
+ L.push('','#FIM');
+ return L.join('\r\n')}
+
+var ultimoNome='cadastro_fornecedor.txt',ASSUNTO='',DEST='compras@achrebit.com.br',PORTAL_URL='';
+function esc(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function labelOf(el){
+ var k=el.getAttribute('data-k'),box=el.closest('div'),lb=box&&box.querySelector('label');
+ var t='';if(lb){var c=lb.cloneNode(true);[].forEach.call(c.querySelectorAll('.req,.hint,br'),function(n){n.remove()});t=c.textContent.replace(/\s+/g,' ').trim()}
+ var pre={'contato.comercial':'Comercial - ','contato.financeiro':'Financeiro - ','contato.expedicao':'Expedição - ','contato.qualidade':'Qualidade - ','enderecoEntrega':'Entrega - ','enderecoCobranca':'Cobrança - '};
+ var m=k.match(/^(contato\.[a-z]+|enderecoEntrega|enderecoCobranca)/);if(m)t=pre[m[1]]+t;
+ return t||k}
+function valorTxt(el){if(el.tagName==='SELECT'){if(!el.value)return '';var o=el.options[el.selectedIndex];return o?o.text:''}return limpa(el.value)}
+function secoes(){
+ var out=[];
+ [].forEach.call(f.querySelectorAll('fieldset'),function(fs){
+  var rows=[];
+  [].forEach.call(fs.querySelectorAll('[data-k]'),function(el){
+   if(el.closest('.hidden'))return;var v=valorTxt(el);if(!v)return;
+   if(el.getAttribute('data-k')==='uf')v=v.toUpperCase();
+   rows.push([labelOf(el),v])});
+  if(fs.querySelector('#tipoForn')){var t=[].filter.call(fs.querySelectorAll('#tipoForn input'),function(i){return i.checked}).map(function(i){return i.value}).join(', ');if(t)rows.unshift(['Tipo de fornecimento',t])}
+  if(rows.length)out.push([fs.querySelector('legend').textContent.replace(/^\d+\.\s*/,''),rows])});
+ return out}
+function relatorioTxt(){
+ var L=['NOVO CADASTRO DE FORNECEDOR - ACHREBIT','Para conferência do Setor de Compras. O arquivo .txt anexo é o que será importado no Nomus.',''];
+ secoes().forEach(function(s){L.push('== '+s[0].toUpperCase()+' =='),s[1].forEach(function(r){L.push(r[0]+': '+r[1])});L.push('')});
+ return L.join('\r\n')}
+function relatorioHtml(){
+ var h='<div style="font-family:Segoe UI,Arial,sans-serif;font-size:13px;color:#1c2430"><h2 style="color:#1f3a5f;margin:0 0 4px">Novo cadastro de fornecedor</h2><p style="margin:0 0 12px;color:#555">Para conferência do Setor de Compras. O arquivo .txt anexo é o que será importado no Nomus.</p>';
+ secoes().forEach(function(s){
+  h+='<table cellpadding="4" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:760px;margin-bottom:12px"><tr><td colspan="2" style="background:#1f3a5f;color:#fff;font-weight:bold;padding:5px 8px">'+esc(s[0])+'</td></tr>';
+  s[1].forEach(function(r,i){h+='<tr style="background:'+(i%2?'#f5f7fa':'#fff')+'"><td style="border-bottom:1px solid #d9dee6;width:36%;color:#555">'+esc(r[0])+'</td><td style="border-bottom:1px solid #d9dee6"><b>'+esc(r[1])+'</b></td></tr>'});
+  h+='</table>'});
+ if(PORTAL_URL)h+='<p style="margin-top:10px">Uso exclusivo do Setor de Compras: <a href="'+esc(PORTAL_URL)+'">validar e importar no Nomus</a> (exige autenticação).</p>';
+ return h+'</div>'}
+function b64(str){return btoa(unescape(encodeURIComponent(str)))}
+function wrap(s){return s.replace(/(.{76})/g,'$1\r\n')}
+function encSubj(s){var parts=[],i=0;while(i<s.length){parts.push('=?UTF-8?B?'+b64(s.substr(i,18))+'?=');i+=18}return parts.join('\r\n ')}
+function montarEml(){
+ var id=Date.now().toString(36),B1='----=_Mix_'+id,B2='----=_Alt_'+id,txt='﻿'+$('saida').value;
+ var L=['To: '+DEST,'Subject: '+encSubj(ASSUNTO),'X-Unsent: 1','MIME-Version: 1.0','Content-Type: multipart/mixed; boundary="'+B1+'"','',
+  '--'+B1,'Content-Type: multipart/alternative; boundary="'+B2+'"','',
+  '--'+B2,'Content-Type: text/plain; charset=utf-8','Content-Transfer-Encoding: base64','',wrap(b64(relatorioTxt())),
+  '--'+B2,'Content-Type: text/html; charset=utf-8','Content-Transfer-Encoding: base64','',wrap(b64(relatorioHtml())),
+  '--'+B2+'--','',
+  '--'+B1,'Content-Type: text/plain; charset=utf-8; name="'+ultimoNome+'"','Content-Transfer-Encoding: base64','Content-Disposition: attachment; filename="'+ultimoNome+'"','',wrap(b64(txt)),
+  '--'+B1+'--',''];
+ return L.join('\r\n')}
+function salvar(conteudo,tipo,nome,msg){
+ try{var b=new Blob([conteudo],{type:tipo}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download=nome;document.body.appendChild(a);a.click();a.remove();$('status').textContent=msg}
+ catch(x){$('status').textContent='Não foi possível baixar aqui. Use "Copiar texto".'}}
+
+f.addEventListener('submit',function(e){
+ e.preventDefault();
+ var r=validar();
+ if(r.erros){r.primeiro.scrollIntoView({behavior:'smooth',block:'center'});try{r.primeiro.focus()}catch(x){}return}
+ $('saida').value=montar();
+ var cn=maskCnpj($('cnpj').value),rz=limpa($('razao').value).slice(0,60);
+ ASSUNTO=rz+' / '+cn+' - Novo Cadastro';
+ ultimoNome='cadastro_fornecedor_'+digits(cn)+'.txt';
+ $('assuntoTxt').textContent='"'+ASSUNTO+'"';
+ $('status').textContent='';
+ $('resultado').classList.remove('hidden');
+ $('resultado').scrollIntoView({behavior:'smooth'})});
+
+$('emlBtn').addEventListener('click',function(){salvar(montarEml(),'message/rfc822','Novo_Cadastro_'+digits($('cnpj').value)+'.eml','Arquivo .eml baixado. Abra-o para ver o e-mail pronto.')});
+$('baixar').addEventListener('click',function(){salvar('﻿'+$('saida').value,'text/plain;charset=utf-8',ultimoNome,'Arquivo .txt baixado. Anexe-o ao e-mail.')});
+$('mailtoBtn').addEventListener('click',function(){
+ var u='mailto:'+DEST+'?subject='+encodeURIComponent(ASSUNTO)+'&body='+encodeURIComponent(relatorioTxt()+'\r\n\r\n----- DADOS PARA IMPORTAÇÃO -----\r\n'+$('saida').value);
+ var a=document.createElement('a');a.href=u;document.body.appendChild(a);a.click();a.remove();
+ $('status').textContent='Se nada abriu, use as outras opções.'});
+$('copiar').addEventListener('click',function(){
+ var t=$('saida');t.select();var ok=false;
+ try{ok=document.execCommand('copy')}catch(x){}
+ if(!ok&&navigator.clipboard){navigator.clipboard.writeText(t.value).then(function(){$('status').textContent='Copiado.'},function(){$('status').textContent='Selecione o texto e copie (Ctrl+C).'});return}
+ $('status').textContent=ok?'Copiado.':'Selecione o texto e copie (Ctrl+C).'});
+
+f.addEventListener('input',function(e){e.target.classList.remove('bad')});
+$('reset').addEventListener('click',function(){setTimeout(function(){
+ $('resultado').classList.add('hidden');$('cobr-box').classList.add('hidden');$('exp-box').classList.add('hidden');
+ $('data').value=hoje();$('cnpj-a').textContent='';
+ [].forEach.call(f.querySelectorAll('.bad'),function(x){x.classList.remove('bad')})},0)});
+})();
+</script>
+</body>
+</html>
