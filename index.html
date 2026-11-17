@@ -224,12 +224,9 @@ Campos com <span class="req">*</span> são obrigatórios. Seus dados ficam apena
  <div class="actions" style="margin-bottom:6px">
   <button class="primary" id="emlBtn" type="button">Abrir e-mail pronto (.eml)</button>
   <button class="secondary" id="baixar" type="button">Baixar arquivo .txt</button>
-  <button class="secondary" id="mailtoBtn" type="button">Abrir pelo programa de e-mail (sem anexo)</button>
-  <button class="secondary" id="copiar" type="button">Copiar texto</button>
   <span id="status" style="font-size:13px;color:var(--ok)"></span>
  </div>
- <p class="hint" style="margin:0 0 8px">A opção "sem anexo" coloca o texto de cadastro no corpo do e-mail; em alguns programas ele pode ser cortado se for muito longo.</p>
- <textarea id="saida" readonly></textarea>
+ <input type="hidden" id="saida">
 </section>
 </main>
 <footer>Achrebit Indústria e Comércio Ltda. · Diadema/SP · Os dados informados são usados somente para o cadastro de fornecedores.</footer>
@@ -357,16 +354,16 @@ function secoes(){
   if(rows.length)out.push([fs.querySelector('legend').textContent.replace(/^\d+\.\s*/,''),rows])});
  return out}
 function relatorioTxt(){
- var L=['NOVO CADASTRO DE FORNECEDOR - ACHREBIT','Para conferência do Setor de Compras. O arquivo .txt anexo é o que será importado no Nomus.',''];
+ var L=['NOVO CADASTRO DE FORNECEDOR - ACHREBIT','Para conferência do Setor de Compras. O arquivo .txt anexo é o que será importado no cadastro.',''];
  secoes().forEach(function(s){L.push('== '+s[0].toUpperCase()+' =='),s[1].forEach(function(r){L.push(r[0]+': '+r[1])});L.push('')});
  return L.join('\r\n')}
 function relatorioHtml(){
- var h='<div style="font-family:Segoe UI,Arial,sans-serif;font-size:13px;color:#1c2430"><h2 style="color:#1f3a5f;margin:0 0 4px">Novo cadastro de fornecedor</h2><p style="margin:0 0 12px;color:#555">Para conferência do Setor de Compras. O arquivo .txt anexo é o que será importado no Nomus.</p>';
+ var h='<div style="font-family:Segoe UI,Arial,sans-serif;font-size:13px;color:#1c2430"><h2 style="color:#1f3a5f;margin:0 0 4px">Novo cadastro de fornecedor</h2><p style="margin:0 0 12px;color:#555">Para conferência do Setor de Compras. O arquivo .txt anexo é o que será importado no cadastro.</p>';
  secoes().forEach(function(s){
   h+='<table cellpadding="4" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:760px;margin-bottom:12px"><tr><td colspan="2" style="background:#1f3a5f;color:#fff;font-weight:bold;padding:5px 8px">'+esc(s[0])+'</td></tr>';
   s[1].forEach(function(r,i){h+='<tr style="background:'+(i%2?'#f5f7fa':'#fff')+'"><td style="border-bottom:1px solid #d9dee6;width:36%;color:#555">'+esc(r[0])+'</td><td style="border-bottom:1px solid #d9dee6"><b>'+esc(r[1])+'</b></td></tr>'});
   h+='</table>'});
- if(PORTAL_URL)h+='<p style="margin-top:10px">Uso exclusivo do Setor de Compras: <a href="'+esc(PORTAL_URL)+'">validar e importar no Nomus</a> (exige autenticação).</p>';
+ if(PORTAL_URL)h+='<p style="margin-top:10px">Uso exclusivo do Setor de Compras: <a href="'+esc(PORTAL_URL)+'">validar e importar o cadastro</a> (exige autenticação).</p>';
  return h+'</div>'}
 function b64(str){return btoa(unescape(encodeURIComponent(str)))}
 function wrap(s){return s.replace(/(.{76})/g,'$1\r\n')}
@@ -384,7 +381,7 @@ function montarEml(){
 function salvar(conteudo,tipo,nome,msg){
  try{var b=new Blob([conteudo],{type:tipo}),a=document.createElement('a');
   a.href=URL.createObjectURL(b);a.download=nome;document.body.appendChild(a);a.click();a.remove();$('status').textContent=msg}
- catch(x){$('status').textContent='Não foi possível baixar aqui. Use "Copiar texto".'}}
+ catch(x){$('status').textContent='Não foi possível baixar aqui. Tente novamente ou use outro navegador.'}}
 
 f.addEventListener('submit',function(e){
  e.preventDefault();
@@ -401,15 +398,6 @@ f.addEventListener('submit',function(e){
 
 $('emlBtn').addEventListener('click',function(){salvar(montarEml(),'message/rfc822','Novo_Cadastro_'+digits($('cnpj').value)+'.eml','Arquivo .eml baixado. Abra-o para ver o e-mail pronto.')});
 $('baixar').addEventListener('click',function(){salvar('﻿'+$('saida').value,'text/plain;charset=utf-8',ultimoNome,'Arquivo .txt baixado. Anexe-o ao e-mail.')});
-$('mailtoBtn').addEventListener('click',function(){
- var u='mailto:'+DEST+'?subject='+encodeURIComponent(ASSUNTO)+'&body='+encodeURIComponent(relatorioTxt()+'\r\n\r\n----- DADOS PARA IMPORTAÇÃO -----\r\n'+$('saida').value);
- var a=document.createElement('a');a.href=u;document.body.appendChild(a);a.click();a.remove();
- $('status').textContent='Se nada abriu, use as outras opções.'});
-$('copiar').addEventListener('click',function(){
- var t=$('saida');t.select();var ok=false;
- try{ok=document.execCommand('copy')}catch(x){}
- if(!ok&&navigator.clipboard){navigator.clipboard.writeText(t.value).then(function(){$('status').textContent='Copiado.'},function(){$('status').textContent='Selecione o texto e copie (Ctrl+C).'});return}
- $('status').textContent=ok?'Copiado.':'Selecione o texto e copie (Ctrl+C).'});
 
 f.addEventListener('input',function(e){e.target.classList.remove('bad')});
 $('reset').addEventListener('click',function(){setTimeout(function(){
